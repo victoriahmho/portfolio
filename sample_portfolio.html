@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — Jane Smith</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy: #0f1e35;
+      --navy-light: #162840;
+      --accent: #4f9cf9;
+      --accent-dim: #1e3a5f;
+      --white: #ffffff;
+      --off-white: #f0f4f9;
+      --muted: #8aa3bf;
+      --text: #cbd8e8;
+      --card-bg: #162840;
+      --border: #1e3a5f;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── Password Gate ── */
+    #gate {
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #gate-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #gate-box .lock-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    #gate-box h2 {
+      color: var(--white);
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    #gate-box p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    #gate-box input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--white);
+      font-size: 1rem;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #gate-box input:focus { border-color: var(--accent); }
+
+    #gate-box button {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    #gate-box button:hover { opacity: 0.85; }
+
+    #gate-error {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    /* ── Main Content ── */
+    #content { display: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 30, 53, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      color: var(--white);
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── Sections ── */
+    section { padding: 80px 40px; max-width: 960px; margin: 0 auto; }
+
+    /* ── Hero ── */
+    #hero {
+      padding-top: 100px;
+      padding-bottom: 80px;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    #hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    #hero h1 span { color: var(--accent); }
+
+    #hero .subtitle {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 580px;
+      margin-bottom: 32px;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary { background: var(--accent); color: var(--white); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn:hover { opacity: 0.8; }
+
+    /* ── Section Header ── */
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 40px;
+    }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .skill-pill {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(79,156,249,0.2);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* ── Work Cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .card-category {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .outcome-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .outcome-tag {
+      background: #0a1e35;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 6px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 44px;
+      position: relative;
+    }
+
+    .timeline-dot {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-top: 4px;
+      border: 3px solid var(--navy);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .timeline-body { flex: 1; }
+
+    .timeline-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-role {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .timeline-date {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .timeline-company {
+      font-size: 0.875rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .timeline-body ul {
+      padding-left: 18px;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .timeline-body li { margin-bottom: 4px; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Password Gate -->
+  <div id="gate">
+    <div id="gate-box">
+      <div class="lock-icon">🔒</div>
+      <h2>Private Portfolio</h2>
+      <p>This page is password protected. Enter the access code to continue.</p>
+      <input type="password" id="pw-input" placeholder="Enter password" />
+      <button onclick="checkPassword()">Unlock</button>
+      <div id="gate-error"></div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="content">
+
+    <nav>
+      <span class="nav-logo">Jane Smith</span>
+      <ul class="nav-links">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="mailto:jane@example.com">Contact</a></li>
+      </ul>
+    </nav>
+
+    <section id="hero">
+      <div class="hero-tag">Product Marketing</div>
+      <h1>Hi, I'm <span>Jane Smith</span>.</h1>
+      <p class="subtitle">
+        Senior PMM with 10+ years turning complex B2B platforms into clear, compelling stories that move pipeline, drive adoption, and win markets.
+      </p>
+      <div class="hero-links">
+        <a class="btn btn-primary" href="#work">See My Work</a>
+        <a class="btn btn-secondary" href="mailto:jane@example.com">Get in Touch</a>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Skills -->
+    <section id="skills">
+      <div class="section-label">Expertise</div>
+      <div class="section-title">Core Competencies</div>
+      <div class="skills-grid">
+        <span class="skill-pill">GTM Strategy</span>
+        <span class="skill-pill">Product Launches</span>
+        <span class="skill-pill">Sales Enablement</span>
+        <span class="skill-pill">Competitive Positioning</span>
+        <span class="skill-pill">Omnichannel Marketing</span>
+        <span class="skill-pill">Pitch Deck Development</span>
+        <span class="skill-pill">Platform Narrative</span>
+        <span class="skill-pill">B2B SaaS</span>
+        <span class="skill-pill">Partner & Co-Marketing</span>
+        <span class="skill-pill">Beta Programs</span>
+        <span class="skill-pill">Customer Insights</span>
+        <span class="skill-pill">AI Fluency</span>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Featured Work -->
+    <section id="work">
+      <div class="section-label">Portfolio</div>
+      <div class="section-title">Featured Work</div>
+      <div class="cards-grid">
+
+        <div class="card">
+          <div class="card-category">Platform Repositioning</div>
+          <h3>Unified Platform Narrative</h3>
+          <p>Led a full GTM repositioning to shift market perception from point-solution to enterprise platform — built pitch decks, sales plays, and stakeholder messaging that aligned the entire org.</p>
+          <div class="outcome-tags">
+            <span class="outcome-tag">90% Sales Confidence</span>
+            <span class="outcome-tag">Org Alignment</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-category">Product Launch</div>
+          <h3>Enterprise Data Platform Launch</h3>
+          <p>Translated a complex multi-product data platform into a "better together" narrative. Developed the full content library and launch strategy from 0 to GA.</p>
+          <div class="outcome-tags">
+            <span class="outcome-tag">NPS 60</span>
+            <span class="outcome-tag">100% Retention</span>
+            <span class="outcome-tag">New Revenue Stream</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-category">Sales Enablement</div>
+          <h3>Competitive Sales Play Library</h3>
+          <p>Built an end-to-end library of competitive battle cards, objection handlers, and sales plays that equipped field teams to win against key alternatives.</p>
+          <div class="outcome-tags">
+            <span class="outcome-tag">40+ Assets</span>
+            <span class="outcome-tag">Field-Ready</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Experience -->
+    <section id="experience">
+      <div class="section-label">Background</div>
+      <div class="section-title">Experience</div>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-body">
+            <div class="timeline-header">
+              <span class="timeline-role">Senior Product Marketing Manager</span>
+              <span class="timeline-date">2021 – Present</span>
+            </div>
+            <div class="timeline-company">Acme Corp</div>
+            <ul>
+              <li>Led GTM for 40+ product launches across enterprise and consumer solutions</li>
+              <li>Repositioned company narrative from point-solution to unified platform</li>
+              <li>Exceeded case study goals 2x with multi-product success stories</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-body">
+            <div class="timeline-header">
+              <span class="timeline-role">Senior Marketing Automation Specialist</span>
+              <span class="timeline-date">2016 – 2020</span>
+            </div>
+            <div class="timeline-company">Acme Corp</div>
+            <ul>
+              <li>Designed omnichannel programs for enterprise accounts spanning email, SMS, and behavioral triggers</li>
+              <li>Collaborated with Sales on product demos to accelerate pipeline conversion</li>
+              <li>Speaker at annual industry conference on product innovation and best practices</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-body">
+            <div class="timeline-header">
+              <span class="timeline-role">Consumer Engagement Coordinator</span>
+              <span class="timeline-date">2014 – 2016</span>
+            </div>
+            <div class="timeline-company">Big Ticketing Co</div>
+            <ul>
+              <li>Managed a 90M+ customer database as CRM subject matter expert</li>
+              <li>Led omnichannel campaign strategy for a major sports league vertical</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <p>This portfolio is private and intended for recruiting purposes only. &copy; 2026 Jane Smith.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = 'portfolio2026';
+
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+
+    function checkPassword() {
+      const input = document.getElementById('pw-input').value;
+      const error = document.getElementById('gate-error');
+      if (input === CORRECT_PASSWORD) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } else {
+        error.textContent = 'Incorrect password. Please try again.';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+      }
+    }
+  </script>
+
+</body>
+</html>
